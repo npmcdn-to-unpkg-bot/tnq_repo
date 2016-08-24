@@ -1,0 +1,245 @@
+atted_aid: false
+xml_namespace: '''xmlns:ce="http://www.elsevier.com/xml/common/dtd" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sb="http://www.elsevier.com/xml/common/struct-bib/dtd" xmlns:tb="http://www.elsevier.com/xml/common/table/dtd" xmlns:sa="http://www.elsevier.com/xml/common/struct-aff/dtd"'''
+article_type: null
+article_type_names: null
+exporter_log_path: /tnqpcpe/logs/in-workflow/exporter.log
+error_log_path: /tnqpcpe/logs/in-workflow/error.log
+error_xml_path: error
+source_modes: 'S3_proof,S3_pts,LocalProof'
+target_modes: 'Ftp_pc,Ftp_pts,Ftp_vtw'
+logger_routing_key: elsevier.outworkflow.endtime_updator.task_started
+default_exporter_options:
+    is_overwrite: true
+    is_delete: false
+    source_mode: S3_proof
+    target_mode: Ftp_pc
+default_mailer_options:
+    is_html: true
+    key: elsevier.mailer.task_started
+    exchange: elsevier.proofcentral_exchange
+    is_bind_key: false
+Local:
+    base_path: /tnqpcpe/data/in-workflow
+LocalProof:
+    base_path: /tnqpcpe/data/backup
+Ftp_pc:
+    base_path: /opt/PCPEQA2
+    host: iftp.tnq.co.in
+    port: 21
+    username: sym_internal
+    password: 47U81l28w21g
+    passive: true
+Ftp_pts:
+    base_path: /opt/PCPEQA2
+    host: iftp.tnq.co.in
+    port: 21
+    username: sym_internal
+    password: 47U81l28w21g
+    passive: true
+Ftp_vtw:
+    base_path: /tmp 
+    host: 10.0.0.176
+    port: 22
+    username: devuser
+    password: test1234
+    passive: true
+S3_proof:
+    key: AKIAJ6TWKX3OF2BDPS5Q
+    secret: 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
+    bucket: pc_dev_test
+    acl: public-read
+    region: us-east-1
+S3_backup:
+    key: AKIAJ6TWKX3OF2BDPS5Q
+    secret: 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
+    bucket: pc_dev_test
+    acl: public-read
+    region: us-east-1
+input_path: TNQ/IN|SPS/IN|THOM/IN|VTEX/IN|SPIN2/IN|MACM/IN|PCDEVTEST/IN|BESTS/IN|FOCAL/IN|KOL/IN|APTAR/IN
+pattern: /.ready.xml/
+supplier_path: '//default:dataset-ready/default:dataset-unique-ids/default:supplier-code'
+dataset_path: '//default:dataset-ready/default:dataset-unique-ids/default:supplier-dataset-id'
+zip_filename: '//default:dataset-ready/default:dataset-package-file/default:filename'
+md5_value: '//default:dataset-ready/default:dataset-package-file/default:md5'
+dataset_backup_path: elsevierDatasetBackup
+file_list_log_path: /tnqpcpe/logs/in-workflow/fileList.log
+file_download_log_path: /tnqpcpe/logs/in-workflow/fileDownload.log
+aid_path: '//default:dataset/default:dataset-content/default:journal-item/default:journal-item-unique-ids/default:jid-aid/default:aid'
+jid_path: '//default:dataset/default:dataset-content/default:journal-item/default:journal-item-unique-ids/default:jid-aid/default:jid'
+jid_splitter: 'BS:'
+full_text_path: '//default:dataset/default:dataset-content/default:journal-item/default:files-info/default:ml/default:weight'
+full_text: FULL-TEXT
+pit_text_path: '//default:dataset/default:dataset-content/default:journal-item/default:journal-item-properties/default:pit'
+pit_text:
+    - ABS
+journal_item_path: '//default:dataset/default:dataset-content/default:journal-item/@type'
+journal_item: '//default:dataset/default:dataset-content/default:journal-item'
+addon_text: WITH-ADD-ONS
+batch_placeholder: BATCH-PLACEHOLDER
+vtool_path: /tnqpcpe/tools/vtool
+vtool_command: 'java -jar {{vtool_path}}/{{version}}/vtool.jar -forcecheck -file {{dataset_xml_path}} -log {{error_path}} {{{skip_ids}}}'
+fp_pattern: /dataset_xml/
+vtool_version_path: //fingerprints/fingerprint/info/program/version
+vtool_skip_id_path: //fingerprints/fingerprint/info/commandline
+vtool_error_count_xpath: //LogReport/Log/results/total-errors
+vtool_error_subcount_xpath: //LogReport/Log/results/Log/results/total-errors
+vtool_error_message_xpath: //LogReport/Log/results/message
+vtool_error_submessage_xpath: '//LogReport/Log/results/Log/results/message[@type=''error'']'
+vtool_error_path: error
+validate_xml_path: /tnqpcpe/apps/in-workflow/current/app/Tnq/InWorkflow/lib/validate_xml.pl
+validator_error_path: error
+wellfomness_command: 'perl {{validate_xml_path}} {{main_xml_path}}'
+qctool_perl_path: /tnqpcpe/apps/in-workflow/current/app/Tnq/InWorkflow/lib/qctool.pl
+qctool_dir_path: /tnqpcpe/apps/in-workflow/current/app/Tnq/InWorkflow/lib/xml-transformation/src/xsl/QCTOOL
+qctool_remove_xsl_path: /tnqpcpe/apps/in-workflow/current/app/Tnq/InWorkflow/lib/xml-transformation/src/xsl/QCTOOL/duplicate_tag_remove.xsl
+qctool_diff_xsl_path: /tnqpcpe/apps/in-workflow/current/app/Tnq/InWorkflow/lib/xml-transformation/src/xsl/QCTOOL/diff.xsl
+qctool_list_tags_xsl_path: /tnqpcpe/apps/in-workflow/current/app/Tnq/InWorkflow/lib/xml-transformation/src/xsl/QCTOOL/list_xml_tags.xsl
+qctool_process_command_saxon_validator: 'java -jar {{saxonvalidator_jar_path}} -f {{xml_path}} -s {{list_xsl_path}} -o {{xml_path}} > {{error_log_path}}'
+qctool_saxon_duplicaite_removal_command: 'java -jar {{jar_path}} -o {{xml_path}} {{xml_path}} {{duplicate_remove_xsl_path}} 2> {{error_log_path}}'
+qctool_saxon_diff_command: 'java -jar {{jar_path}} {{xml_path}} {{diff_xsl_path}} +pSpecific=''{{qctool_dir}}/{{customer}}/base.xml'' 2> {{error_log_path}}'
+qctool_saxon_validator_jar_path: /tnqpcpe/apps/in-workflow/current/app/Tnq/InWorkflow/lib/xml-transformation/bin/jar/saxonvalidator.jar
+saxon_jar_path: /tnqpcpe/apps/in-workflow/current/app/Tnq/InWorkflow/lib/xml-transformation/bin/jar/saxon8.jar
+lib_dir: /tnqpcpe/apps/in-workflow/current/app/Tnq/InWorkflow/lib
+query_jar_path: /tnqpcpe/apps/in-workflow/current/app/Tnq/InWorkflow/lib/xml-transformation/bin/OPTXMLTransformation.jar
+query_xsc_path: /tnqpcpe/apps/in-workflow/current/app/Tnq/InWorkflow/lib/xml-transformation/bin/opt-validate-query-xml.xsc
+query_cmd: 'java -jar {{jar_path}} -xsc {{query_xsc_path}} -i {{xml_path}} -o {{error_log_path}} -imgSrc dummy -customer {{customer}} -pid {{pid}} -aid {{aid}} -staticPath {{static_path}} 2> {{console_error_log_path}}'
+xml_nesting_xsc_path: /tnqpcpe/apps/in-workflow/current/app/Tnq/InWorkflow/lib/xml-transformation/bin/opt-validate-XML.xsc
+nested_xml_cmd: 'java -jar {{jar_path}} -xsc {{xml_nesting_xsc_path}} -i {{xml_path}} -o /tmp/test.log -imgSrc dummy -customer {{customer}} -pid {{pid}} -aid {{aid}} -staticPath {{static_path}} 2> {{error_log_path}}'
+validator_log_path: /tnqpcpe/logs/in-workflow/validator.log
+preg_validate_url: '/[£$%&*()}{@#~?><>,|=_+¬-]/'
+base_workflow_xpath: '//default:dataset'
+workflow_inner_xpath: '//default:proof-correctors/default:proof-corrector'
+is_commented_workflow: true
+predefined_workflows:
+    - AU-MC
+    - AU-ED-MC
+    - AU-JM
+    - AU-ED-JM
+    - MC
+    - AU
+    - AU-ED-PM
+    - ED-MC
+    - AU-PM
+predefined_q_to_pub:
+    - MC-JM
+    - MC-PM
+first_round_workflows:
+    - AU-ED-MC
+    - AU-MC
+resupply_workflows:
+    - PM
+q_to_pub_count: 1
+resupply_max_count: 5
+msg_journal_not_supported: 'Sorry! Please check the journal name as this journal is not supported by OPT.'
+token_generation: notself
+version_required: false
+article_version_path: '//default:dataset/default:dataset-content/default:book-item/default:version/default:version-number'
+is_book: false
+default_namespace_value: 'default:'
+proof_path: proofs
+image_process_command: 'perl {{fig_perl_path}} {{customer}} {{jid}} {{aid}} {{fig_folder_base_path}}'
+fig_perl_path: /tnqpcpe/apps/in-workflow/current/app/Tnq/InWorkflow/lib/figure_process.pl
+conversion_src_files: /tnqpcpe/apps/in-workflow/current/app/Tnq/InWorkflow/lib
+mathconversion_required: 'yes'
+math_generate_process_command: 'perl {{math_generate_perl_path}} {{customer}} {{jid}} {{aid}} {{math_folder_base_path}} {{conversion_src_files}}'
+math_conv_process_command: 'perl {{math_conversion_perl_path}} {{customer}} {{jid}} {{aid}} {{math_folder_base_path}} {{conversion_src_files}}'
+mathml_folder_path: mathml
+mathfile_copyto_folder_path: images
+article_xml_folder_path: xml
+html_output_filename: main.html
+query_file_name: query.xml
+math_generate_perl_path: /tnqpcpe/apps/in-workflow/current/app/Tnq/InWorkflow/lib/math_generation.pl
+math_conversion_perl_path: /tnqpcpe/apps/in-workflow/current/app/Tnq/InWorkflow/lib/math_conversion.pl
+xml_conversion_file_path: /tnqpcpe/apps/in-workflow/current/app/Tnq/InWorkflow/lib/xml-transformation/bin
+xml_conversion_jar_file: OPTXMLTransformation.jar
+xml_conversion_java_cmd: 'java -Dfile.encoding=UTF-8 -jar {{xml_conversion_jar_path}} -i {{article_xml_path}} -o {{html_output_path}} -xsc {{xml_conversion_file}} -id -customer {{customer}} -pid {{pid}} -aid {{aid}} -staticPath {{static_path}} {{imgSrc}}'
+html_clean_up_cmd: cmd
+is_html_clean_up_needed: false
+query_conv_perl_path: /tnqpcpe/apps/in-workflow/current/app/Tnq/InWorkflow/lib/query_process.pl
+xml_doctype: '''<!DOCTYPE article PUBLIC "-//ES//DTD journal article DTD version 5.2.0//EN//XML" "art520.dtd">'''
+query_process_command: 'perl {{query_conv_perl_path}} {{customer}} {{pid}} {{aid}} {{query_folder}} {{conversion_src_files}} {{{xml_doctype}}} {{{xml_namespace}}} {{{imgSrc}}} {{{static_path}}}'
+prep_log_path: /tnqpcpe/logs/in-workflow/prep.log
+html_error_txt_file_path: 'html_error/{{jid}}_{{aid}}.log'
+pdf_template_required: true
+pdf_template: /tnqpcpe/apps/in-workflow/current/app/Tnq/InWorkflow/config/template.pdf
+online_pageproof: ViewPageProof
+pdf_template_cmd: 'pdftk {{pdfTemplatePath}} {{pdfSrcPath}} cat output {{pdfDestPath}} encrypt_40bit owner_pw password allow printing'
+xml_prep_error_log: optprep.log
+xml_conversion_file: opt-elsevier-xml.xsc
+static_path: 'http://s3.amazonaws.com/test_tmp'
+xml_encoding_cmd: 'java -jar {{jar_path}} -xsc {{xml_encoding_xsc_path}} -i {{xml_path}} -o {{encoded_xml_name}} -imgSrc dummy -customer {{customer}} -pid {{pid}} -aid {{aid}} -staticPath {{static_path}}'
+xml_encoding_xsc_path: /tnqpcpe/apps/in-workflow/current/app/Tnq/InWorkflow/lib/xml-transformation/bin/opt-encoder-xml.xsc
+head_title: 'head ce:title'
+simple_head_title: 'simple-head ce:title'
+book_review_head: 'book-review-head sb:maintitle'
+book_review: book-review
+dochead: 'ce:dochead'
+correspondence: 'ce:correspondence'
+author: 'ce:author'
+cross_ref: 'ce:cross-ref'
+given_name: 'ce:given-name'
+surname: 'ce:surname'
+workflow_log_path: /tnqpcpe/logs/in-workflow/workflow.log
+math_tags: 'mml:math'
+pdf_count_cmd: 'pdfinfo {{pdf_file_path}}  | grep Pages: | awk ''{print $2}'''
+query_raiser_expr: 'mc_query_count > 0 ? ''{{role_code}}'' : ''end'''
+query_replier_expr: 'reply_query_count === mc_query_count ? ''{{role_code}}'' : false'
+authorcode:
+    - AU
+proof_validator:
+    - MC
+    - JM
+    - PM
+proof_corrector:
+    - ED
+author_email: null
+page_central_pilot_journals: {  }
+page_central_pilot_site: null
+page_central_site: null
+pilot_journals: {  }
+pilot_site: null
+orderxml_input_path: TNQ/IN/ORDER|SPS/IN/ORDER|THOM/IN/ORDER|VTEX/IN/ORDER|SPIN2/IN/ORDER|MACM/IN/ORDER|BESTS/IN/ORDER|FOCAL/IN/ORDER|PCDEVTEST/IN/ORDER|APTAR/IN/ORDER
+jid_value_path: '//default:orders/default:order/default:item-info/default:jid'
+aid_value_path: '//default:orders/default:order/default:item-info/default:aid'
+stagetype_value_path: '//default:orders/default:order/default:stage'
+orderxml_filelist_log_path: /tnqpcpe/logs/in-workflow/orderxml_list.log
+orderxml_errorsignal_log_path: /tnqpcpe/logs/in-workflow/orderxml_error.log
+orderxml_error_template: /tnqpcpe/apps/in-workflow/current/app/Tnq/InWorkflow/config/stageTypeErrorTemplate.xml
+orderxml_signal_file_name: '{{jid}}-{{aid}}-PC-message-reader-failure-{{time_stamp}}.xml'
+orderxml_info_log: /tnqpcpe/logs/in-workflow/orderxml_info.log
+orderxml_filepattern:
+    - xml
+stage_type_value:
+    - S200
+    - S250
+    - S200RESUPPLY
+    - S250RESUPPLY
+orderxml_error_value: error
+is_html_proofing: false
+orderxml_wrong_fileinput_log: /tnqpcpe/logs/in-workflow/orderxml_wrongfilelist.log
+mailSubmittedArticleStatus: 8
+viewPageProofFile: main.pdf
+meta_pattern: ''
+meta_jid: ''
+meta_aid: ''
+meta_artilce_title: ''
+meta_file_path: ''
+meta_image_pattern: ''
+meta_author: null
+dataset_template: ''
+is_api_needed: null
+book_messages:
+    proof_already_generated: 'Sorry! The Article already generated with Proof Central.'
+    no_workflow_defined: 'Sorry! There is no workflow defined in Dataset.xml!'
+    no_more_revisions: 'Sorry! No more revisions are allowed for this proof.'
+    wrong_workflow: 'Sorry! Given workflow for this article is wrong!'
+    proof_not_generated: 'Sorry! The first round proof still not generated with Proof Central.'
+validator_message:
+    pit: 'are not appeared in dataset.xml, Article moved to offline'
+    full_text: 'FULLTEXT not appeared in dataset xml, Article moved to offline'
+    jid_missing: 'JID missing in dataset.xml file'
+    aid_missing: 'AID missing in dataset.xml file'
+    empty_jid_pid: 'JID or AID is missing'
+    add_ons: 'with-add-ons appeared in dataset.xml, Article moved to offline'
+    batch_placeholder: 'batch-placeholder appeared in dataset.xml, Article moved to offline'
+    sub_chapter: 'sub-chapter appeared in main.xml, Article moved to offline'

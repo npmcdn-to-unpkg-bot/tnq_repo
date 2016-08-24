@@ -1,0 +1,27 @@
+body {
+    background: #456767;
+    color : #ffffff;
+}
+
+html {
+    color: #222;
+    font-size: 1em;
+    line-height: 1.4;
+}
+
+.tb {
+    background-color : #505050;
+    color: 0090ff;
+    border-style: none;
+    onfocus="this.value=''
+}
+
+div#loadingImge {
+    display         : none;
+    text-align      : center;
+    margin          : 1px 200px 0px 200px;
+    padding         : 105px 0px 5px 15px;
+    color           : green;
+    text-decoration : blink;
+    font-size       : 14px;
+}

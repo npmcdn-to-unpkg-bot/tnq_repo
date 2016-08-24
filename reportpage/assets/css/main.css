@@ -1,0 +1,41 @@
+body {
+    background: #456767;
+    color : #ffffff;
+}
+
+html {
+    color: #222;
+    font-size: 1em;
+    line-height: 1.4;
+}
+
+.tb {
+    background-color : #505050;
+    color: 0090ff;
+    border-style: none;
+    onfocus="this.value=''
+}
+
+div#loadingImge {
+    display         : none;
+    text-align      : center;
+    margin          : 1px 200px 0px 200px;
+    padding         : 105px 0px 5px 15px;
+    color           : green;
+    text-decoration : blink;
+    font-size       : 14px;
+}
+
+div#BinaryReport
+{
+    display: none;
+    margin:0 auto;
+    height:auto;
+    width:620px;
+    padding:14px;
+    border:solid 10px #7F9B4E;
+    background:#f4f8ef;
+    position : absolute;
+    left            : 10px;
+
+}

@@ -1,0 +1,103 @@
+use_rdbms: true
+rdbms:
+    driver: pdo_mysql
+    host: localhost
+    user: root
+    password: mysql
+    dbname: pc_pe
+rabbitmq:
+    -
+        host: 10.0.0.176
+        username: proofcentral_pe
+        password: pcpe1234
+        vhost: qa.elsevier
+        port: 5672
+mailer:
+    host: 'ssl://smtp.gmail.com'
+    port: 465
+    smtp_auth: true
+    username: pcuat@tnqsoftware.co.in
+    password: pr@@fcentral
+    encryption: null
+commands:
+    upload:
+        work: WorkflowService->processData
+    delete:
+        work: WorkflowService->delete
+listen:
+    download:
+        work: FileDownload->downloadDataset
+        queue_name: elsevier.proofcentral.file-downloader
+        exchange_name: elsevier.proofcentral_exchange
+        exchange_type: topic
+        limit: 5
+    validator:
+        work: Validator->processData
+        queue_name: elsevier.proofcentral.validator
+        exchange_name: elsevier.proofcentral_exchange
+        exchange_type: topic
+        limit: 5
+    prepgenerator:
+        work: PrepService->processData
+        queue_name: elsevier.proofcentral.prep-generator
+        exchange_name: elsevier.proofcentral_exchange
+        exchange_type: topic
+        limit: 5
+    workflow:
+        work: WorkflowService->processData
+        queue_name: elsevier.proofcentral.article-generator
+        exchange_name: elsevier.proofcentral_exchange
+        exchange_type: topic
+        limit: 5
+    exporter:
+        work: ExporterService->processData
+        queue_name: elsevier.proofcentral.file-exporter
+        exchange_name: elsevier.proofcentral_exchange
+        exchange_type: topic
+        limit: 50
+watch:
+    filelist:
+        work: FileList->fileWatcher
+        limit: 5
+        interval: 5
+    orderxml:
+        work: OrderxmlList->fileWatcher
+        limit: 5
+        interval: 5
+publish:
+    download:
+        exchange_name: elsevier.proofcentral_exchange
+        exchange_type: topic
+        routing_key: elsevier.ftp-file-list.task_completed
+    validator:
+        exchange_name: elsevier.proofcentral_exchange
+        exchange_type: topic
+        routing_key: elsevier.file-downloader.task_completed
+    prepgenerator:
+        exchange_name: elsevier.proofcentral_exchange
+        exchange_type: topic
+        routing_key: elsevier.validator.task_completed
+    workflow:
+        exchange_name: elsevier.proofcentral_exchange
+        exchange_type: topic
+        routing_key: elsevier.prep-generator.task_completed
+    mailer:
+        exchange_name: elsevier.proofcentral_exchange
+        exchange_type: topic
+        routing_key: elsevier.mailer.task_started
+    exporter:
+        exchange_name: elsevier.proofcentral_exchange
+        exchange_type: topic
+        routing_key: elsevier.file_exporter.task_started
+    exportercallback:
+        exchange_name: elsevier.proofcentral_exchange
+        exchange_type: topic
+        routing_key: elsevier.outworkflow.endtime_updator.task_started
+    api:
+        exchange_name: elsevier.proofcentral_exchange
+        exchange_type: topic
+        routing_key: unknown
+    report:
+        exchange_name: elsevier.proofcentral_exchange
+        exchange_type: topic
+        routing_key: unknown
